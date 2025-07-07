@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PrivateRoute } from "./routes/PrivateRoute";
 import { LayoutDashboard } from "./components/layouts/LayoutDashboard";
-
 import { Dashboard } from "./pages/Dashboard";
 import { MahasiswaPage } from "./pages/MahasiswaPage";
 import { TambahMahasiswaPage } from "./pages/TambahMahasiswaPage";
