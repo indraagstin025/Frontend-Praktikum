@@ -1,12 +1,16 @@
-import { useState } from "react";
-import { register } from "../services/authServices"; // Assuming you have a register function
+import { useState, useEffect } from "react";
+import { register } from "../services/authServices";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
 export function RegisterPage() {
-    // We'll include a 'role' field in the form state, defaulting to 'user'
-    const [form, setForm] = useState({ username: "", password: "", role: "user" }); 
+    const [form, setForm] = useState({ username: "", password: "", role: "" });
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) navigate("/dashboard");
+    }, [navigate]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -16,14 +20,11 @@ export function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Your register service would now take username, password, and role
-            await register(form.username, form.password, form.role); 
+            await register(form.username, form.password, form.role);
             Swal.fire("Berhasil", "Registrasi berhasil! Silakan login.", "success");
-            navigate("/login"); // Redirect to login page after successful registration
-        // eslint-disable-next-line no-unused-vars
+            navigate("/");
         } catch (err) {
-            // Provide a general error message. Specific errors should come from the backend.
-            Swal.fire("Gagal", "Registrasi gagal. Silakan coba lagi.", "error");
+            Swal.fire("Gagal", "Registrasi gagal. Username mungkin sudah digunakan.", "error");
         }
     };
 
@@ -33,7 +34,7 @@ export function RegisterPage() {
                 onSubmit={handleSubmit}
                 className="bg-white p-8 rounded shadow-md w-full max-w-sm"
             >
-                <h2 className="text-xl font-bold mb-6 text-center">Daftar Akun Baru</h2>
+                <h2 className="text-xl font-bold mb-6 text-center">Register</h2>
                 <input
                     type="text"
                     name="username"
@@ -41,7 +42,7 @@ export function RegisterPage() {
                     value={form.username}
                     onChange={handleChange}
                     className="w-full p-2 mb-4 border rounded"
-                    required // Make username a required field
+                    required
                 />
                 <input
                     type="password"
@@ -50,31 +51,36 @@ export function RegisterPage() {
                     value={form.password}
                     onChange={handleChange}
                     className="w-full p-2 mb-6 border rounded"
-                    required // Make password a required field
+                    required
                 />
-
-                {/* Role selection - typically for internal admin creation or specific scenarios */}
-                <div className="mb-6">
-                    <label htmlFor="role" className="block text-gray-700 text-sm font-bold mb-2">
-                        Pilih Role:
-                    </label>
-                    <select
-                        id="role"
-                        name="role"
-                        value={form.role}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
+                <select
+                    name="role"
+                    value={form.role || ""}
+                    onChange={handleChange}
+                    className="w-full p-2 mb-6 border rounded"
+                    required
+                >
+                    <option value="" disabled>
+                        Pilih Role
+                    </option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                </select>
+                <div className="mb-4 text-center">
+                    <span>Sudah punya akun? </span>
+                    <button
+                        type="button"
+                        className="text-blue-500 hover:underline"
+                        onClick={() => navigate("/")}
                     >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                    </select>
+                        Login
+                    </button>
                 </div>
-
                 <button
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                 >
-                    Daftar
+                    Register
                 </button>
             </form>
         </div>

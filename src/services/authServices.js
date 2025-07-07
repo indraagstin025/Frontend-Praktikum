@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const API_URL = "https://backend-praktikum-production.up.railway.app";
 
 /**
